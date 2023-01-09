@@ -3,8 +3,7 @@ import numpy as np
 import time
 import matplotlib.pyplot as plot
 import tensorflow as tf
-from tensorflow.keras.layers import Bidirectional, TimeDistributed, Conv2D, MaxPooling2D, Input, GRU, Dense, Activation, Dropout, Reshape, Permute
-from tensorflow.keras.layers import BatchNormalization
+from tensorflow.keras.layers import Bidirectional, TimeDistributed, Conv2D, MaxPooling2D, Input, GRU, Dense, Activation, Dropout, Reshape, Permute, BatchNormalization
 from tensorflow.keras.models import Model
 from sklearn.metrics import confusion_matrix
 import metrics
