@@ -1,17 +1,16 @@
-from __future__ import print_function
 import os
 import numpy as np
 import time
-import sys
 import matplotlib.pyplot as plot
-from keras.layers import Bidirectional, TimeDistributed, Conv2D, MaxPooling2D, Input, GRU, Dense, Activation, Dropout, Reshape, Permute
-from keras.layers.normalization import BatchNormalization
-from keras.models import Model
+import tensorflow as tf
+from tensorflow.keras.layers import Bidirectional, TimeDistributed, Conv2D, MaxPooling2D, Input, GRU, Dense, Activation, Dropout, Reshape, Permute
+from tensorflow.keras.layers import BatchNormalization
+from tensorflow.keras.models import Model
 from sklearn.metrics import confusion_matrix
 import metrics
 import utils
-import keras.backend as K
-K.set_image_data_format('channels_first')
+
+tf.keras.backend.set_image_data_format("channels_last")
 plot.switch_backend('agg')
 
 
@@ -68,9 +67,9 @@ def plot_functions(_nb_epoch, _tr_loss, _val_loss, _f1, _er, extension=''):
     plot.legend()
     plot.grid(True)
 
-    plot.savefig(__models_dir + __fig_name + extension)
+    plot.savefig(models_dir + fig_name + extension)
     plot.close()
-    print('figure name : {}'.format(__fig_name))
+    print('figure name : {}'.format(fig_name))
 
 
 def preprocess_data(_X, _Y, _X_test, _Y_test, _seq_len, _nb_ch):
@@ -92,9 +91,8 @@ def preprocess_data(_X, _Y, _X_test, _Y_test, _seq_len, _nb_ch):
 
 is_mono = True  # True: mono-channel input, False: binaural input
 
-feat_folder = '/feat/'
-__fig_name = '{}_{}'.format('mon' if is_mono else 'bin', time.strftime("%Y_%m_%d_%H_%M_%S"))
-
+feat_folder = 'feat/'
+fig_name = '{}_{}'.format('mon' if is_mono else 'bin', time.strftime("%Y_%m_%d_%H_%M_%S"))
 
 nb_ch = 1 if is_mono else 2
 batch_size = 128    # Decrease this if you want to run on smaller GPU's
@@ -108,13 +106,13 @@ sr = 44100
 nfft = 2048
 frames_1_sec = int(sr/(nfft/2.0))
 
-print('\n\nUNIQUE ID: {}'.format(__fig_name))
+print('\n\nUNIQUE ID: {}'.format(fig_name))
 print('TRAINING PARAMETERS: nb_ch: {}, seq_len: {}, batch_size: {}, nb_epoch: {}, frames_1_sec: {}'.format(
     nb_ch, seq_len, batch_size, nb_epoch, frames_1_sec))
 
 # Folder for saving model and training curves
-__models_dir = 'models/'
-utils.create_folder(__models_dir)
+models_dir = 'saved models/'
+utils.create_folder(models_dir)
 
 # CRNN model definition
 cnn_nb_filt = 128            # CNN filter size
@@ -127,7 +125,8 @@ print('MODEL PARAMETERS:\n cnn_nb_filt: {}, cnn_pool_size: {}, rnn_nb: {}, fc_nb
 
 avg_er = list()
 avg_f1 = list()
-for fold in [1, 2, 3, 4]:
+folds_list = [1, 2, 3, 4]
+for fold in folds_list:
     print('\n\n----------------------------------------------')
     print('FOLD: {}'.format(fold))
     print('----------------------------------------------\n')
@@ -173,7 +172,7 @@ for fold in [1, 2, 3, 4]:
             best_conf_mat = conf_mat
             best_er = er_overall_1sec_list[i]
             f1_for_best_er = f1_overall_1sec_list[i]
-            model.save(os.path.join(__models_dir, '{}_fold_{}_model.h5'.format(__fig_name, fold)))
+            model.save(os.path.join(models_dir, '{}_fold_{}_model.h5'.format(fig_name, fold)))
             best_epoch = i
             pat_cnt = 0
 

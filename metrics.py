@@ -1,14 +1,5 @@
 import numpy as np
 import utils
-#####################
-# Scoring functions
-#
-# Code blocks taken from Toni Heittola's repository: http://tut-arg.github.io/sed_eval/
-#
-# Implementation of the Metrics in the following paper:
-# Annamaria Mesaros, Toni Heittola, and Tuomas Virtanen, 'Metrics for polyphonic sound event detection',
-# Applied Sciences, 6(6):162, 2016
-#####################
 
 
 def f1_overall_framewise(O, T):

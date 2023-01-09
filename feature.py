@@ -115,11 +115,12 @@ __class_labels = {
 
 # location of data.
 folds_list = [1, 2, 3, 4]
-evaluation_setup_folder = '/evaluation_setup/'
-audio_folder = '/audio/'
+dataset = 'TUT Sound Events 2017'
+evaluation_setup_folder = dataset + '/evaluation_setup/'
+audio_folder = dataset + '/audio/street/'
 
 # Output
-feat_folder = '/feat/'
+feat_folder = 'feat/'
 utils.create_folder(feat_folder)
 
 # User set parameters
@@ -132,16 +133,19 @@ sr = 44100
 # -----------------------------------------------------------------------
 # Feature extraction and label generation
 # -----------------------------------------------------------------------
+
 # Load labels
-train_file = os.path.join(evaluation_setup_folder, 'street_fold{}_train.txt'.format(1))
-evaluate_file = os.path.join(evaluation_setup_folder, 'street_fold{}_evaluate.txt'.format(1))
-desc_dict = load_desc_file(train_file)
-desc_dict.update(load_desc_file(evaluate_file)) # contains labels for all the audio in the dataset
+desc_dict = {}
+for fold in folds_list:
+    train_file = os.path.join(evaluation_setup_folder, 'street_fold{}_train.txt'.format(fold))
+    evaluate_file = os.path.join(evaluation_setup_folder, 'street_fold{}_evaluate.txt'.format(fold))
+    desc_dict.update(load_desc_file(train_file))
+    desc_dict.update(load_desc_file(evaluate_file)) # contains labels for all the audio in the dataset
 
 # Extract features for all audio files, and save it along with labels
 for audio_filename in os.listdir(audio_folder):
     audio_file = os.path.join(audio_folder, audio_filename)
-    print('Extracting features and label for : {}'.format(audio_file))
+    print('Extracting features and label for: {}'.format(audio_file))
     y, sr = load_audio(audio_file, mono=is_mono, fs=sr)
     mbe = None
 
@@ -201,4 +205,4 @@ for fold in folds_list:
 
     normalized_feat_file = os.path.join(feat_folder, 'mbe_{}_fold{}.npz'.format('mon' if is_mono else 'bin', fold))
     np.savez(normalized_feat_file, X_train, Y_train, X_test, Y_test)
-    print('Normalized_feat_file : {}'.format(normalized_feat_file))
+    print('Normalized feat file: {}'.format(normalized_feat_file))
