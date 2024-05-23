@@ -25,7 +25,7 @@ def er_overall_framewise(O, T):
     I = np.maximum(0, FP-FN).sum()
 
     Nref = T.sum()
-    ER = (S+D+I) / (Nref + 0.0)
+    ER = (S+D+I) / (Nref+0.0)
     return ER
 
 
